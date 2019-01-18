@@ -113,15 +113,15 @@ button:hover {
 	background: #184c62;
 }
 
-/*a.pdf::after{
-  content: "Locked";
+label.conflict::after{
+  content: "Scheduling Conflict";
   color: #fff;
   font-size: 10px;
   background-color: #de565b;
   padding: 3px 6px;
   margin-left: 5px;
   border-radius: 3px;
-}*/
+}
 
 /* ================================= 
   Page Styles
