@@ -1,11 +1,15 @@
-//On webpage load, put focus on the 'name' input field
+/*
+  On webpage load...
+  - put focus on the 'name' input field
+  - hide the 'Other' input field
+  - visually clear the t-shirt color option box
+  - attach appropriate class names to each t-shirt color option
+*/
 $('#name').focus();
-
-//On webpage load, hide the 'Other' input field
 $('#other-title').hide();
-
-$('#color').val('').children().hide(); //Visually clear the option box
+$('#color').val('').children().hide(); 
 classifyShirts();
+
 
 /*               BASIC INFO                 */
 
@@ -36,6 +40,7 @@ function classifyShirts(){
 //
 //Having trouble assigning the new current index item to the top of the option list
 //
+//Displays the appropriate color options given the t-shirt design selected
 const displayShirtColors = (type) => {
   const shirtColors = $('#color').children();
   shirtColors.hide();
@@ -62,8 +67,15 @@ $('#design').on('change', function() {
 
 var totalPrice = 0; //Global total price variable
 
+//Adding a 'Total Price' element
+const priceDisplay = $('<span>').text('Total Price: $0.00').addClass('totalPrice');
+$('.activities').append(priceDisplay);
+
+const updatePrice = () => {
+  $('.totalPrice').text($('.totalPrice').text().replace(/\$[0-9]*\.[0-9]+/, `$${totalPrice}.00`));
+}
+
 $('.activities').on('click', 'input[type=checkbox]', function() {
-  //const regexp_timeAndDay = new RegExp(/([MTWFS][a-z]*day)\s([0-9]+[^0-9]*[0-9]+[pa]m)/); //Test expression for weekday and time
   const activityLabels = $('.activities label');
   const activityInputs = $('.activities label input');
   const regexp_timeAndDay = new RegExp(/([MTWFS][a-z]*day).*([0-9]+.*[0-9]+[pa]m)/); //Test expression for weekday and time
@@ -75,13 +87,14 @@ $('.activities').on('click', 'input[type=checkbox]', function() {
   var userOptions_time;
 
   const toggleSelection = (label, input) => {
-    $(label).toggleClass('conflict');
+    $(label).toggleClass('conflict'); //Turns on the conflict 'flag'
     $(input).attr('disabled') ? $(input).attr('disabled', false) : $(input).attr('disabled', true);
-    $(label).fadeOut(500).fadeIn(500); //quick animation to alert user to conflict(s)...
+    $(label).fadeOut(500).fadeIn(500); //Quick animation to alert user to conflict(s)...
   }
 
   //Keeps track of running price total for user selections...
   $(this).prop('checked') ? totalPrice += userChoice_price : totalPrice -= userChoice_price; 
+  updatePrice();
 
   //Tests whether or not a 'day' and 'time' can be extracted...if not, left blank...
   if (regexp_timeAndDay.test($(this).parent().text())){
@@ -103,10 +116,9 @@ $('.activities').on('click', 'input[type=checkbox]', function() {
 	toggleSelection($(activityLabels).eq(i), $(activityInputs).eq(i));
       }
     }catch{
-      console.log(`No matches for Activity List found on item ${i+1}...`);
+      console.log(`No matches for regexp_timeAndDay found on item ${i+1}...`);
     }
   }
-  console.log(totalPrice);
 });
 
 
