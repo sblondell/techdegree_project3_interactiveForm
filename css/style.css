@@ -113,16 +113,6 @@ button:hover {
 	background: #184c62;
 }
 
-label.conflict::after{
-  content: "Scheduling Conflict";
-  color: #fff;
-  font-size: 10px;
-  background-color: #de565b;
-  padding: 3px 6px;
-  margin-left: 5px;
-  border-radius: 3px;
-}
-
 span.totalPrice {
   font-weight: bold;
   color: #000;
@@ -167,6 +157,45 @@ span.totalPrice {
   clear: both;
 }
 
+label.conflict::after{
+  content: "Scheduling Conflict";
+  color: #fff;
+  font-size: 10px;
+  background-color: #de565b;
+  padding: 3px 6px;
+  margin-left: 5px;
+  border-radius: 3px;
+}
+
+label.invalid::after{
+  content: "Required";
+  color: #fff;
+  font-size: 10px;
+  background-color: #de565b;
+  padding: 3px 6px;
+  margin-left: 5px;
+  border-radius: 3px;
+}
+
+label[for=mail].invalid::after{
+  content: "Please enter a valid email address. ex. john@host.com";
+  color: #fff;
+  font-size: 10px;
+  background-color: #de565b;
+  padding: 3px 6px;
+  margin-left: 5px;
+  border-radius: 3px;
+}
+
+.activities legend.invalid::after{
+  content: "Please choose at least one activity";
+  color: #fff;
+  font-size: 10px;
+  background-color: #de565b;
+  padding: 3px 6px;
+  margin-left: 5px;
+  border-radius: 3px;
+}
 /* ================================= 
   Media Queries
 ==================================== */

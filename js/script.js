@@ -1,3 +1,7 @@
+//Take all global variables and organize them at the top...
+
+
+
 /*
   On webpage load...
   - put focus on the 'name' input field
@@ -14,7 +18,8 @@ classifyShirts();
 /*               BASIC INFO                 */
 
 $('#title').on('change', function() {
-  if (/other/i.test($(this).val())){ //If the user selects the 'other' job role option, display the text field
+  //if (/other/i.test($(this).val())){ //If the user selects the 'other' job role option, display the text field
+  if ($(this).val() === "other"){
     $('#other-title').show();
   }else {
     $('#other-title').hide();
@@ -68,7 +73,7 @@ $('#design').on('change', function() {
 var totalPrice = 0; //Global total price variable
 
 //Adding a 'Total Price' element
-const priceDisplay = $('<span>').text('Total Price: $0.00').addClass('totalPrice');
+const priceDisplay = $('<span>').text('Total: $0.00').addClass('totalPrice');
 $('.activities').append(priceDisplay);
 
 const updatePrice = () => {
@@ -77,7 +82,7 @@ const updatePrice = () => {
 
 $('.activities').on('click', 'input[type=checkbox]', function() {
   const activityLabels = $('.activities label');
-  const activityInputs = $('.activities label input');
+  const activityInputs = $('.activities input');
   const regexp_timeAndDay = new RegExp(/([MTWFS][a-z]*day).*([0-9]+.*[0-9]+[pa]m)/); //Test expression for weekday and time
   const regexp_price = new RegExp(/\$([0-9]*$)/); //Test expression for price 
   const userChoice_price = parseInt(regexp_price.exec($(this).parent().text())[1]);//'.exec()' returns an array; the 'price' is extracted... 
@@ -123,3 +128,119 @@ $('.activities').on('click', 'input[type=checkbox]', function() {
 
 
 
+/*             PAYMENT INFO                 */
+
+const div_payment_creditCard = $('.credit-card');
+const div_payment_payPal = div_payment_creditCard.next().hide();
+const div_payment_bitCoin = div_payment_payPal.next().hide();
+const payment_method = $('#payment').val('credit card');
+
+payment_method.on('change', function() {
+  div_payment_creditCard.hide();
+  div_payment_payPal.hide();
+  div_payment_bitCoin.hide();
+
+  if (payment_method.val() === 'credit card'){
+    div_payment_creditCard.show();
+  }else if (payment_method.val() === 'paypal'){
+    div_payment_payPal.show();
+  }else if (payment_method.val() === 'bitcoin'){
+    div_payment_bitCoin.show();
+  }else{
+    //User should not be able to submit the form without selecting a payment option
+  }
+});
+
+
+
+/*             FORM VALIDATION              */
+
+const offFocusValidator = (validator) => {
+  return e => {
+    const valid = validator(e.target.value);
+    const flag = e.target.previousElementSibling;
+    showValidationError(valid, flag);
+  }
+}
+
+const showValidationError = (valid, element) => {
+  if (valid){
+    $(element).removeClass('invalid');
+  }else{
+    $(element).addClass('invalid').fadeOut(500).fadeIn(500);
+  }
+}
+
+const validator_user_name = () => {
+  var valid = false;
+  $('#name').val() ? valid = true : valid = false;
+  showValidationError(valid, $('label[for=name]'));
+  return valid;
+}
+
+const validator_user_email = () => {
+  var valid = false;
+  /^[0-9a-z]+@[0-9a-z]+\.[a-z]{3}$/i.test($('#mail').val()) ? valid = true : valid = false;
+  showValidationError(valid, $('label[for=mail]'));
+  return valid;
+}
+const validator_activity = () => {
+  var valid = false;
+  for (let i = 0; i < $('.activities input').length; i++){
+    if ($('.activities input').eq(i).prop('checked')){
+      valid = true;
+      break;
+    }
+  }
+  showValidationError(valid, $('.activities legend'));
+  return valid;
+}
+const validator_user_cc = () => {
+  var valid = false;
+  /^[0-9]{13,16}$/.test($('#cc-num').val()) ? valid = true : valid = false;
+  showValidationError(valid, $('label[for=cc-num]'));
+  return valid;
+}
+const validator_user_zip = () => {
+  var valid = false;
+  /^[0-9]{5}$/.test($('#zip').val()) ? valid = true : valid = false;
+  showValidationError(valid, $('label[for=zip]'));
+  return valid;
+}
+const validator_user_cvv = () => {
+  var valid = false;
+  /^[0-9]{3}$/.test($('#cvv').val()) ? valid = true : valid = false;
+  showValidationError(valid, $('label[for=cvv]'));
+  return valid;
+}
+
+const user_name = $('#name').blur(offFocusValidator(validator_user_name)); 
+const user_email = $('#mail').blur(offFocusValidator(validator_user_email)); 
+const user_cc = $('#cc-num').blur(offFocusValidator(validator_user_cc));  
+const user_zip = $('#zip').blur(offFocusValidator(validator_user_zip));  
+const user_cvv = $('#cvv').blur(offFocusValidator(validator_user_cvv));  
+
+const validateForm = () => {
+  var submit = false;
+  var cc_valid = false;
+
+  if ($('#payment').val() === 'credit card'){
+    validator_user_cc();
+    validator_user_zip();
+    validator_user_cvv();
+  }
+  validator_user_name();
+  validator_user_email();
+  validator_activity();
+
+  if ($('#payment').val() === 'credit card'){
+    if (validator_user_cc() && validator_user_zip() && validator_user_cvv()){ cc_valid = true; }
+  }
+  if (validator_user_name() && validator_user_email() && validator_activity() && cc_valid){ submit = true; }
+
+  return submit;
+}
+
+$('button[type=submit]').on('click', function(e) {
+  validateForm() ? alert("form submitted") : e.preventDefault();
+});
