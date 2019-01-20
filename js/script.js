@@ -214,11 +214,11 @@ const validator_user_cvv = () => {
   return valid;
 }
 
-const user_name = $('#name').blur(offFocusValidator(validator_user_name)); 
-const user_email = $('#mail').blur(offFocusValidator(validator_user_email)); 
-const user_cc = $('#cc-num').blur(offFocusValidator(validator_user_cc));  
-const user_zip = $('#zip').blur(offFocusValidator(validator_user_zip));  
-const user_cvv = $('#cvv').blur(offFocusValidator(validator_user_cvv));  
+const user_name = $('#name');//.blur(offFocusValidator(validator_user_name)); 
+const user_email = $('#mail');//.blur(offFocusValidator(validator_user_email)); 
+const user_cc = $('#cc-num');//.blur(offFocusValidator(validator_user_cc));  
+const user_zip = $('#zip');//.blur(offFocusValidator(validator_user_zip));  
+const user_cvv = $('#cvv');//.blur(offFocusValidator(validator_user_cvv));  
 
 const validateForm = () => {
   var submit = false;
