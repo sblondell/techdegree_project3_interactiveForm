@@ -196,6 +196,37 @@ label[for=mail].invalid::after{
   margin-left: 5px;
   border-radius: 3px;
 }
+
+label[for=cc-num].invalid::after{
+  content: "Please enter a 13-16 digit CC number";
+  color: #fff;
+  font-size: 10px;
+  background-color: #de565b;
+  padding: 3px 6px;
+  margin-left: 5px;
+  border-radius: 3px;
+}
+
+label[for=zip].invalid::after{
+  content: "5 digit zip req.";
+  color: #fff;
+  font-size: 10px;
+  background-color: #de565b;
+  padding: 3px 6px;
+  margin-left: 5px;
+  border-radius: 3px;
+}
+
+label[for=cvv].invalid::after{
+  content: "3 digit CVV req.";
+  color: #fff;
+  font-size: 10px;
+  background-color: #de565b;
+  padding: 3px 6px;
+  margin-left: 5px;
+  border-radius: 3px;
+}
+
 /* ================================= 
   Media Queries
 ==================================== */

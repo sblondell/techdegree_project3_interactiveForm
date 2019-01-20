@@ -141,13 +141,14 @@ payment_method.on('change', function() {
   div_payment_bitCoin.hide();
 
   if (payment_method.val() === 'credit card'){
+    isValid(true, $('label[for=payment]'));
     div_payment_creditCard.show();
   }else if (payment_method.val() === 'paypal'){
+    isValid(true, $('label[for=payment]'));
     div_payment_payPal.show();
   }else if (payment_method.val() === 'bitcoin'){
+    isValid(true, $('label[for=payment]'));
     div_payment_bitCoin.show();
-  }else{
-    //User should not be able to submit the form without selecting a payment option
   }
 });
 
@@ -155,15 +156,21 @@ payment_method.on('change', function() {
 
 /*             FORM VALIDATION              */
 
-const offFocusValidator = (validator) => {
+const user_name = $('#name');
+const user_email = $('#mail');
+const user_cc = $('#cc-num');
+const user_zip = $('#zip');
+const user_cvv = $('#cvv');
+
+/*const offFocusValidator = (validator) => {
   return e => {
     const valid = validator(e.target.value);
     const flag = e.target.previousElementSibling;
-    showValidationError(valid, flag);
+    isValid(valid, flag);
   }
-}
+}*/
 
-const showValidationError = (valid, element) => {
+const isValid = (valid, element) => {
   if (valid){
     $(element).removeClass('invalid');
   }else{
@@ -174,14 +181,14 @@ const showValidationError = (valid, element) => {
 const validator_user_name = () => {
   var valid = false;
   $('#name').val() ? valid = true : valid = false;
-  showValidationError(valid, $('label[for=name]'));
+  isValid(valid, $('label[for=name]'));
   return valid;
 }
 
 const validator_user_email = () => {
   var valid = false;
   /^[0-9a-z]+@[0-9a-z]+\.[a-z]{3}$/i.test($('#mail').val()) ? valid = true : valid = false;
-  showValidationError(valid, $('label[for=mail]'));
+  isValid(valid, $('label[for=mail]'));
   return valid;
 }
 const validator_activity = () => {
@@ -192,55 +199,47 @@ const validator_activity = () => {
       break;
     }
   }
-  showValidationError(valid, $('.activities legend'));
+  isValid(valid, $('.activities legend'));
   return valid;
 }
 const validator_user_cc = () => {
   var valid = false;
   /^[0-9]{13,16}$/.test($('#cc-num').val()) ? valid = true : valid = false;
-  showValidationError(valid, $('label[for=cc-num]'));
+  isValid(valid, $('label[for=cc-num]'));
   return valid;
 }
 const validator_user_zip = () => {
   var valid = false;
   /^[0-9]{5}$/.test($('#zip').val()) ? valid = true : valid = false;
-  showValidationError(valid, $('label[for=zip]'));
+  isValid(valid, $('label[for=zip]'));
   return valid;
 }
 const validator_user_cvv = () => {
   var valid = false;
   /^[0-9]{3}$/.test($('#cvv').val()) ? valid = true : valid = false;
-  showValidationError(valid, $('label[for=cvv]'));
+  isValid(valid, $('label[for=cvv]'));
   return valid;
 }
 
-const user_name = $('#name');//.blur(offFocusValidator(validator_user_name)); 
-const user_email = $('#mail');//.blur(offFocusValidator(validator_user_email)); 
-const user_cc = $('#cc-num');//.blur(offFocusValidator(validator_user_cc));  
-const user_zip = $('#zip');//.blur(offFocusValidator(validator_user_zip));  
-const user_cvv = $('#cvv');//.blur(offFocusValidator(validator_user_cvv));  
-
 const validateForm = () => {
-  var submit = false;
-  var cc_valid = false;
+  var submit = true;
 
-  if ($('#payment').val() === 'credit card'){
-    validator_user_cc();
-    validator_user_zip();
-    validator_user_cvv();
+  //If 'submit' at any time is flipped to false, the form is invalid
+  validator_user_name() ? submit = true : submit = false;
+  validator_user_email() && submit ? submit = true : submit = false;
+  validator_activity() && submit ? submit = true : submit = false;
+
+  if (payment_method.val() === 'credit card'){
+    validator_user_cc() && submit ? submit = true : submit = false;
+    validator_user_zip() && submit ? submit = true : submit = false;
+    validator_user_cvv() && submit ? submit = true : submit = false;
+  }else if (payment_method.val() === 'select_method'){
+    submit = false;
+    isValid(false, $('label[for=payment]'));
   }
-  validator_user_name();
-  validator_user_email();
-  validator_activity();
-
-  if ($('#payment').val() === 'credit card'){
-    if (validator_user_cc() && validator_user_zip() && validator_user_cvv()){ cc_valid = true; }
-  }
-  if (validator_user_name() && validator_user_email() && validator_activity() && cc_valid){ submit = true; }
-
   return submit;
 }
 
 $('button[type=submit]').on('click', function(e) {
-  validateForm() ? alert("form submitted") : e.preventDefault();
+  validateForm() ? alert("Form has been submitted") : e.preventDefault();
 });
