@@ -115,6 +115,7 @@ button:hover {
 
 span.totalPrice {
   font-weight: bold;
+  box-shadow: 5px 5px 2px #fff;
   color: #000;
   background-color: #ffae19;
   padding: 3px 6px;

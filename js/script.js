@@ -6,13 +6,16 @@
   On webpage load...
   - put focus on the 'name' input field
   - hide the 'Other' input field
-  - visually clear the t-shirt color option box
+  - visually clear the t-shirt color option box;
+      if the '#extra credit' for hiding the 'color' options wasn't implemented, this simply provides for better aesthetics
   - attach appropriate class names to each t-shirt color option
+  - hide the 'color' options for the user until a 'design' choice is selected
 */
 $('#name').focus();
 $('#other-title').hide();
-$('#color').val('').children().hide(); 
+$('#color').val('');
 classifyShirts();
+$('#colors-js-puns').hide();
 
 
 /*               BASIC INFO                 */
@@ -48,6 +51,7 @@ function classifyShirts(){
 //Displays the appropriate color options given the t-shirt design selected
 const displayShirtColors = (type) => {
   const shirtColors = $('#color').children();
+  $('#colors-js-puns').show(); //Reveal the 'color' options
   shirtColors.hide();
 
   for (let i = 0; i < shirtColors.length; i++){
@@ -91,10 +95,13 @@ $('.activities').on('click', 'input[type=checkbox]', function() {
   var userOptions_day;
   var userOptions_time;
 
-  const toggleSelection = (label, input) => {
-    $(label).toggleClass('conflict'); //Turns on the conflict 'flag'
-    $(input).attr('disabled') ? $(input).attr('disabled', false) : $(input).attr('disabled', true);
-    $(label).fadeOut(500).fadeIn(500); //Quick animation to alert user to conflict(s)...
+  const toggleSelection = (selection, inputBox) => {
+    selection.toggleClass('conflict'); //Turns on the conflict 'flag'
+    inputBox.attr('disabled') ? inputBox.attr('disabled', false) : inputBox.attr('disabled', true);
+    selection.fadeOut(500).fadeIn(500); //Quick animation to alert user to conflict(s)...
+    //$(selection).toggleClass('conflict'); //Turns on the conflict 'flag'
+    //$(inputBox).attr('disabled') ? $(inputBox).attr('disabled', false) : $(inputBox).attr('disabled', true);
+    //$(selection).fadeOut(500).fadeIn(500); //Quick animation to alert user to conflict(s)...
   }
 
   //Keeps track of running price total for user selections...
@@ -110,15 +117,19 @@ $('.activities').on('click', 'input[type=checkbox]', function() {
   //Iterate through the selection list and enable/disable any conflicting selections...
   for (let i = 0; i < activityLabels.length; i++){
     try{
-      userOptions_day = regexp_timeAndDay.exec($(activityLabels).eq(i).text())[1];
-      userOptions_time = regexp_timeAndDay.exec($(activityLabels).eq(i).text())[2];
+      //userOptions_day = regexp_timeAndDay.exec($(activityLabels).eq(i).text())[1];
+      //userOptions_time = regexp_timeAndDay.exec($(activityLabels).eq(i).text())[2];
+      userOptions_day = regexp_timeAndDay.exec(activityLabels.eq(i).text())[1];
+      userOptions_time = regexp_timeAndDay.exec(activityLabels.eq(i).text())[2];
 
       if (
 	userChoice_day === userOptions_day
 	&& userChoice_time === userOptions_time
-	&& $(this).parent().index() != $(activityLabels).eq(i).index() //used to make sure user's choice is not affected by toggle code...
+	//&& $(this).parent().index() != $(activityLabels).eq(i).index() //used to make sure user's choice is not affected by toggle code...
+	&& $(this).parent().index() != activityLabels.eq(i).index() //used to make sure user's choice is not affected by toggle code...
       ){
-	toggleSelection($(activityLabels).eq(i), $(activityInputs).eq(i));
+	//toggleSelection($(activityLabels).eq(i), $(activityInputs).eq(i));
+	toggleSelection(activityLabels.eq(i), activityInputs.eq(i));
       }
     }catch{
       console.log(`No matches for regexp_timeAndDay found on item ${i+1}...`);
@@ -172,9 +183,11 @@ const user_cvv = $('#cvv');
 
 const isValid = (valid, element) => {
   if (valid){
-    $(element).removeClass('invalid');
+    //$(element).removeClass('invalid');
+    element.removeClass('invalid');
   }else{
-    $(element).addClass('invalid').fadeOut(500).fadeIn(500);
+    //$(element).addClass('invalid').fadeOut(500).fadeIn(500);
+    element.addClass('invalid').finish().fadeOut(500).fadeIn(500);
   }
 }
 
@@ -184,7 +197,6 @@ const validator_user_name = () => {
   isValid(valid, $('label[for=name]'));
   return valid;
 }
-
 const validator_user_email = () => {
   var valid = false;
   /^[0-9a-z]+@[0-9a-z]+\.[a-z]{3}$/i.test($('#mail').val()) ? valid = true : valid = false;
@@ -242,4 +254,8 @@ const validateForm = () => {
 
 $('button[type=submit]').on('click', function(e) {
   validateForm() ? alert("Form has been submitted") : e.preventDefault();
+});
+
+$('#mail').on('input', function() {
+  validator_user_email() ? isValid(true, $('label[for=mail]')) : isValid(false, $('label[for=mail]'));
 });
