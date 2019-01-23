@@ -1,27 +1,29 @@
-//Take all global variables and organize them at the top...
-
-
-
 /*
   On webpage load...
   - put focus on the 'name' input field
   - hide the 'Other' input field
-  - visually clear the t-shirt color option box;
-      if the '#extra credit' for hiding the 'color' options wasn't implemented, this simply provides for better aesthetics
   - attach appropriate class names to each t-shirt color option
-  - hide the 'color' options for the user until a 'design' choice is selected
+  - add a 'placeholder' option that requests that the user choose a t-shirt theme
+  - hide every color option except the 'placeholder' option
+  - #Extra Credit: hide the 'color' options div for the user until a 'design' choice is selected
 */
 $('#name').focus();
 $('#other-title').hide();
-$('#color').val('');
 classifyShirts();
+$('#color').append($('<option>').text('Please select a T-shirt theme').attr('selected', true).attr('disabled', true));
+$('#color').children().hide();
 $('#colors-js-puns').hide();
+
+var totalPrice = 0; //Global total price variable
+
+//Adding a 'Total Price' span element to the webpage
+const priceDisplay = $('<span>').text('Total: $0.00').addClass('totalPrice');
+$('.activities').append(priceDisplay);
 
 
 /*               BASIC INFO                 */
 
 $('#title').on('change', function() {
-  //if (/other/i.test($(this).val())){ //If the user selects the 'other' job role option, display the text field
   if ($(this).val() === "other"){
     $('#other-title').show();
   }else {
@@ -45,9 +47,6 @@ function classifyShirts(){
   }
 }
 
-//
-//Having trouble assigning the new current index item to the top of the option list
-//
 //Displays the appropriate color options given the t-shirt design selected
 const displayShirtColors = (type) => {
   const shirtColors = $('#color').children();
@@ -75,12 +74,6 @@ $('#design').on('change', function() {
 
 /*        REGISTER FOR ACTIVITIES           */
 
-var totalPrice = 0; //Global total price variable
-
-//Adding a 'Total Price' element to the webpage
-const priceDisplay = $('<span>').text('Total: $0.00').addClass('totalPrice');
-$('.activities').append(priceDisplay);
-
 const updatePrice = () => {
   $('.totalPrice').text($('.totalPrice').text().replace(/\$[0-9]*\.[0-9]+/, `$${totalPrice}.00`));
 }
@@ -101,9 +94,6 @@ $('.activities').on('click', 'input[type=checkbox]', function() {
     selection.toggleClass('conflict'); //Turns on the conflict 'flag'
     inputBox.attr('disabled') ? inputBox.attr('disabled', false) : inputBox.attr('disabled', true);
     selection.fadeOut(500).fadeIn(500); //Quick animation to alert user to conflict(s)...
-    //$(selection).toggleClass('conflict'); //Turns on the conflict 'flag'
-    //$(inputBox).attr('disabled') ? $(inputBox).attr('disabled', false) : $(inputBox).attr('disabled', true);
-    //$(selection).fadeOut(500).fadeIn(500); //Quick animation to alert user to conflict(s)...
   }
 
   //Keeps track of running price total for user selections...
@@ -119,18 +109,14 @@ $('.activities').on('click', 'input[type=checkbox]', function() {
   //Iterate through the selection list and enable/disable any conflicting selections...
   for (let i = 0; i < activityLabels.length; i++){
     try{
-      //userOptions_day = regexp_timeAndDay.exec($(activityLabels).eq(i).text())[1];
-      //userOptions_time = regexp_timeAndDay.exec($(activityLabels).eq(i).text())[2];
       userOptions_day = regexp_timeAndDay.exec(activityLabels.eq(i).text())[1];
       userOptions_time = regexp_timeAndDay.exec(activityLabels.eq(i).text())[2];
 
       if (
 	userChoice_day === userOptions_day
 	&& userChoice_time === userOptions_time
-	//&& $(this).parent().index() != $(activityLabels).eq(i).index() //used to make sure user's choice is not affected by toggle code...
 	&& $(this).parent().index() != activityLabels.eq(i).index() //used to make sure user's choice is not affected by toggle code...
       ){
-	//toggleSelection($(activityLabels).eq(i), $(activityInputs).eq(i));
 	toggleSelection(activityLabels.eq(i), activityInputs.eq(i));
       }
     }catch{
@@ -146,7 +132,7 @@ $('.activities').on('click', 'input[type=checkbox]', function() {
 const div_payment_creditCard = $('.credit-card');
 const div_payment_payPal = div_payment_creditCard.next().hide();
 const div_payment_bitCoin = div_payment_payPal.next().hide();
-const payment_method = $('#payment').val('credit card');
+const payment_method = $('#payment').val('credit card'); //Default payment method is credit card
 
 //Listen for user payment method selection
 payment_method.on('change', function() {
@@ -178,14 +164,13 @@ const user_cvv = $('#cvv');
 
 
 //Turns a helper flag on or off depending on if the associated validator returns true or false
-const isValid = (valid, element) => {
+const isValid = (valid, element, customErrorMsg) => {
   if (valid){
-    //$(element).removeClass('invalid');
-    element.removeClass('invalid');
+    element.removeClass();
   }else{
-    //$(element).addClass('invalid').fadeOut(500).fadeIn(500);
-    element.addClass('invalid').finish().fadeOut(500).fadeIn(500);
+    element.removeClass().addClass('invalid').finish().fadeOut(500).fadeIn(500);
   }
+  customErrorMsg ? element.removeClass().addClass(customErrorMsg) : false;
 }
 
 //
@@ -200,7 +185,12 @@ const validator_user_name = () => {
 const validator_user_email = () => {
   var valid = false;
   /^[0-9a-z]+@[0-9a-z]+\.[a-z]{3}$/i.test($('#mail').val()) ? valid = true : valid = false;
-  isValid(valid, $('label[for=mail]'));
+  if ($('#mail').val() === ''){
+    isValid(valid, $('label[for=mail]'), 'invalidEmpty');
+    valid = false;
+  }else{
+    isValid(valid, $('label[for=mail]'));
+  }
   return valid;
 }
 const validator_activity = () => {
@@ -257,8 +247,8 @@ $('button[type=submit]').on('click', function(e) {
   validateForm() ? alert("Form has been submitted") : e.preventDefault();
 });
 
-//"Real-time" validator for user e-mail input
+//Real-time validator for user e-mail input
 $('#mail').on('input', function() {
-  validator_user_email() ? isValid(true, $('label[for=mail]')) : isValid(false, $('label[for=mail]'));
+  validator_user_email();
 });
 

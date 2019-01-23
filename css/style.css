@@ -188,6 +188,16 @@ label[for=mail].invalid::after{
   border-radius: 3px;
 }
 
+label[for=mail].invalidEmpty::after{
+  content: "Please enter an email address";
+  color: #fff;
+  font-size: 10px;
+  background-color: #de565b;
+  padding: 3px 6px;
+  margin-left: 5px;
+  border-radius: 3px;
+}
+
 .activities legend.invalid::after{
   content: "Please choose at least one activity";
   color: #fff;
@@ -209,7 +219,7 @@ label[for=cc-num].invalid::after{
 }
 
 label[for=zip].invalid::after{
-  content: "5 digit zip req.";
+  content: "5 digits req.";
   color: #fff;
   font-size: 10px;
   background-color: #de565b;

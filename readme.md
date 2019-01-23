@@ -1,21 +1,12 @@
-/* techdegree project 1 - Random Quote Generator */
-/* November 16, 2018                             */
+/* techdegree project 3 - Interactive Form       */
+/* January 5, 2019                               */
 /*                                               */
-/* Using HTML5, CSS, and Javascript to create a  */
-/* webpage that randomly displays the contents   */
-/* of an array on a page.                        */
+/* Using HTML5, CSS, Javascript, and JQuery      */
+/* to validate the input from a user-submitted   */
+/* form.                                         */ 
 
 #Extra Credit
-1. Add more properties to the quote objects
-  I added a 'citation' and 'year' property to all quote objects.
-  I was able to find citation and year data for two of the objects.
 
-2. Random background color
-  I added a random color(hex) generator (line 121) and it is used 
-  on line 114.
-
-3. Auto-refresh the quote
-  A global variable (line 8) is used to keep track of page refreshing.
-  Everytime the quote is manually refreshed, the global timer is reset(line 97,98).
-  This prevented multiple calls to 'setInterval()' from piling up and
-  executing.
+1. Hid the color option div(script.js, ln. 15) and revealed only when user selects design (script.js, ln. 53) 
+2. The credit card input has a custom error/validation message (style.css, ln. 211)
+3. There is a real-time validation function attached to the e-mail input element (script.js, ln. 251)
