@@ -62,6 +62,7 @@ const displayShirtColors = (type) => {
   }
 }
 
+//Listen for user design choice
 $('#design').on('change', function() {
   if (/js puns/i.test($(this).val())){ 
     displayShirtColors('puns');
@@ -76,7 +77,7 @@ $('#design').on('change', function() {
 
 var totalPrice = 0; //Global total price variable
 
-//Adding a 'Total Price' element
+//Adding a 'Total Price' element to the webpage
 const priceDisplay = $('<span>').text('Total: $0.00').addClass('totalPrice');
 $('.activities').append(priceDisplay);
 
@@ -84,6 +85,7 @@ const updatePrice = () => {
   $('.totalPrice').text($('.totalPrice').text().replace(/\$[0-9]*\.[0-9]+/, `$${totalPrice}.00`));
 }
 
+//Listen for user activity selections
 $('.activities').on('click', 'input[type=checkbox]', function() {
   const activityLabels = $('.activities label');
   const activityInputs = $('.activities input');
@@ -146,6 +148,7 @@ const div_payment_payPal = div_payment_creditCard.next().hide();
 const div_payment_bitCoin = div_payment_payPal.next().hide();
 const payment_method = $('#payment').val('credit card');
 
+//Listen for user payment method selection
 payment_method.on('change', function() {
   div_payment_creditCard.hide();
   div_payment_payPal.hide();
@@ -173,14 +176,8 @@ const user_cc = $('#cc-num');
 const user_zip = $('#zip');
 const user_cvv = $('#cvv');
 
-/*const offFocusValidator = (validator) => {
-  return e => {
-    const valid = validator(e.target.value);
-    const flag = e.target.previousElementSibling;
-    isValid(valid, flag);
-  }
-}*/
 
+//Turns a helper flag on or off depending on if the associated validator returns true or false
 const isValid = (valid, element) => {
   if (valid){
     //$(element).removeClass('invalid');
@@ -191,6 +188,9 @@ const isValid = (valid, element) => {
   }
 }
 
+//
+//All input validators
+//
 const validator_user_name = () => {
   var valid = false;
   $('#name').val() ? valid = true : valid = false;
@@ -252,10 +252,13 @@ const validateForm = () => {
   return submit;
 }
 
+//Listen for user submit
 $('button[type=submit]').on('click', function(e) {
   validateForm() ? alert("Form has been submitted") : e.preventDefault();
 });
 
+//"Real-time" validator for user e-mail input
 $('#mail').on('input', function() {
   validator_user_email() ? isValid(true, $('label[for=mail]')) : isValid(false, $('label[for=mail]'));
 });
+
